@@ -10,7 +10,7 @@ g3=200/(1+0.01*s)^2;
 g4=200/(1+0.01*s);
 
 
-g6=g4*g1-g3;
+g6=g4*g1-g3
 % y1 p   y2 uref   y3 u0
 y1=ilaplace(g2);
 y2=ilaplace(g4);

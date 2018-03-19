@@ -70,20 +70,4 @@ class Conditioner(object):
         return fun(self.t_min, self.t_max, self.t_true)
 
 
-b= []
-d= []
-p=0
-for i in range(10):
-    t_max= 23
-    t_min= 22
-    t_true= 24
-    state= 0
-    a= Conditioner(1200,0,t_max, t_min, t_true, state, 0)
-    y, t, w, out= a.get_p()
-    d.append(w)
-    c= [y, t, w, out]
-    plt.plot(t,out)
-    plt.show()
-    p= p+ 1200*w[i]
-    b.append(c)
-print(d)
+
