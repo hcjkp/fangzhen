@@ -26,7 +26,7 @@ class Conditioner(object):
         r_gs = np.random.normal(0.08, 0.008)  # 玻璃表面的等效热阻
 
         x_ext = np.random.uniform(31, 32)  # 外界温度
-        x_adj = np.random.uniform(23, 30)  # 相邻房间的温度
+        x_adj = np.random.uniform(23, 26)  # 相邻房间的温度
         i_eq = np.random.uniform(45, 55) + np.random.uniform(30, 35)  # 太阳通过玻璃表面以及室内家具的辐射量
         i_ew = np.random.uniform(95, 105)  # 太阳通过外墙表面的辐射量
 
@@ -43,7 +43,8 @@ class Conditioner(object):
         )
 
         def fxy(x, y):
-            out = np.dot(a, y) + np.dot(b, np.array([31, i_ew, i_eq, 1200 * x, 23]))
+            out = np.dot(a, y) + np.dot(b, np.array([31, 95, 70, 1200*x, 23]))
+
             return out
 
         def fun(t1, t2, t0):
@@ -54,15 +55,17 @@ class Conditioner(object):
             out = [t0] * 1001
             for i in range(1000):
                 t[i + 1] = t[i] + h / 60
-                if y[i][1] > t2:
+                if y[i][1] >= t2:
                     w[i + 1] = 1
-                elif y[i][1] < t1:
+                elif y[i][1] <= t1:
                     w[i + 1] = 0
                 else:
                     w[i + 1] = w[i]
                 y.append(y[i] + fxy(w[i], y[i]) * h)
+                print(r_gs)
                 y[i + 1] = y[i] + (fxy(w[i + 1], y[i + 1]) + fxy(w[i], y[i])) * (h / 2)
                 out[i + 1] = y[i + 1][1]
+
             return y, t, w, out
         return fun(self.t_min, self.t_max, self.t_true)
 
@@ -70,14 +73,17 @@ class Conditioner(object):
 b= []
 d= []
 p=0
-for i in range(1000):
+for i in range(10):
     t_max= 23
     t_min= 22
-    t_true= 22.5
+    t_true= 24
     state= 0
     a= Conditioner(1200,0,t_max, t_min, t_true, state, 0)
     y, t, w, out= a.get_p()
+    d.append(w)
     c= [y, t, w, out]
+    plt.plot(t,out)
+    plt.show()
     p= p+ 1200*w[i]
     b.append(c)
-print(b)
+print(d)

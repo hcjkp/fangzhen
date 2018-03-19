@@ -51,7 +51,13 @@ def fun(t1,t2, t0):
     print(y)
     plt.plot(t,out)
     plt.show()
-fun(22,23,23)
+fun(22,23,22.5)
+for i in range(10):
+    t_max= 23
+    t_min= 22
+    t_true= 22.5
+    state= 0
+    fun(t_min, t_max, t_true)
 
 
 
