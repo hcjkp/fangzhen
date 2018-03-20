@@ -21,6 +21,7 @@ def yuandong(p0,betaw,n):
     return y2
 
 
+def liciji():
 
 
 
