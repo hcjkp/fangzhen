@@ -106,7 +106,8 @@ def gen(n, h):
     betaw = [0] * (n + 1)
     pt = [0] * (n + 1)
     pe = [0] * (n + 1)
-    ef0 = eq0
+    ef0 = eq0 * (n + 1)
+    ef =[ef0]
     # ud1=xq*iq1-ra*id1
     # uq1=eqq-xdd*id1-ra*iq1
 
@@ -135,4 +136,5 @@ def gen(n, h):
         betap = pt[i] - k * betaw[i]
         yuan_y1[i+1],yuan_y2[i+1]=yuandong(betap,yuan_y1[i],yuan_y2[i],h)
         pm[i+1]=0.33*yuan_y1[i+1]+0.67*yuan_y2[i+1]
+        li_y[i+1]=lici(u0,u[i],li_y[i],h)
 

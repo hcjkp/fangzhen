@@ -56,5 +56,5 @@ y1 = fang(-2, 2, y1, betap, h)
 a = np.mat([[-5, 0], [0.1, -0.1]])
 b = np.mat([[5], [0]])
 y2 = fang(a, b, y2, y1, h)
-print(y1,y2)
+print(y1,float(y2[1]))
 
