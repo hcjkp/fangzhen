@@ -26,7 +26,7 @@ def pq_abc(x, ia, ib, ic):
 def xiang(x, y):
     return x * sin(y) + 1j * cos(y)
 
-
+# 发电机参数
 k = 20
 wref = 50
 wrefb = 1
@@ -97,5 +97,4 @@ for i in range(1000):
     betap = pt[i] - k * betaw[i]
     pm[i] = betap
 
-    pt[i] = ud[0] * id[0] + uq[0] * iq[0]
-    pe[i] = ud[0] * id[0] + uq[0] * iq[0] + ra * (id**2 + iq**2)
+
