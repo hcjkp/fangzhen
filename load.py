@@ -17,6 +17,7 @@ class Conditioner(object):
         return ave_conditioner
 
     def get_p(self):
+        # region 设置空调参数
         c_ew = np.random.normal(1.875, 0.1875) * 100000  # 外墙的热容量
         c_in = np.random.normal(1.2, 0.12) * 100000  # 室内空气的热容量
         c_iw = np.random.normal(3.1, 0.31) * 100000  # 内墙的热容量
@@ -29,6 +30,7 @@ class Conditioner(object):
         x_adj = np.random.uniform(23, 26)  # 相邻房间的温度
         i_eq = np.random.uniform(45, 55) + np.random.uniform(30, 35)  # 太阳通过玻璃表面以及室内家具的辐射量
         i_ew = np.random.uniform(95, 105)  # 太阳通过外墙表面的辐射量
+        # endregion
 
         a = np.array(
             [[(1 / c_ew) * ((r_cew / (r_ew * (r_ew + r_cew)) - (2 / r_ew))), 1 / (c_ew * r_ew), 0],

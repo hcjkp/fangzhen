@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import math
 from load import Conditioner
 
+# region 定义函数
 e = math.e
 pi = math.pi
 
@@ -25,8 +26,9 @@ def pq_abc(x, ia, ib, ic):
 
 def xiang(x, y):
     return x * sin(y) + 1j * cos(y)
+# endregion
 
-# 发电机参数
+
 k = 20
 wref = 50
 wrefb = 1
