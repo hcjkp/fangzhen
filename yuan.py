@@ -4,13 +4,13 @@ import math
 from load import Conditioner
 
 
-def fangc(a, b, y, c, h):
+def fang(a, b, y, c, h):
     out = y + (a * y + b * c) * h
     out2 = y + (a * y + b * c + b * c + a * out) * h / 2
     return out2
 
 
-def lici(uref, n, h):  # ut为标幺值
+def lici(uref, h):  # ut为标幺值
     a = np.mat([[-50, 0, 0],
                 [249.6, -250.2667, -1.25],
                 [6240, -6240, -31.25]])
@@ -26,7 +26,7 @@ def lici(uref, n, h):  # ut为标幺值
     return y
 
 
-print(lici(1, 1000, 0.001))
+
 
 
 def jiefangcheng(a, b, y, c, n, h):  # a，b 数组, y,c 可为列表，a为 n行 n列，b为n行 m列 c为m行
@@ -44,5 +44,17 @@ def yuandong(p0, betaw, n):
     y1 = jiefangcheng(-2, 2, y1, c, n, 1)
     a = np.mat([[-5, 0], [0.1, -0.1]])
     b = np.mat([[5], [0]])
-    y2 = jiefangcheng(a, b, y2, y1, n, 1)
+    y2 = fang(a, b, y2, y1, 1)
     return y2
+
+y1=np.mat([1])
+y2=np.mat([[1],[1]])
+h=0.001
+betap=1
+
+y1 = fang(-2, 2, y1, betap, h)
+a = np.mat([[-5, 0], [0.1, -0.1]])
+b = np.mat([[5], [0]])
+y2 = fang(a, b, y2, y1, h)
+print(y1,y2)
+
