@@ -107,6 +107,7 @@ def gen(n, h):
     pt = [0] * (n + 1)
     pe = [0] * (n + 1)
     ef0 = eq0
+    ef=[ef0]*(n+1)
     # ud1=xq*iq1-ra*id1
     # uq1=eqq-xdd*id1-ra*iq1
 
@@ -122,7 +123,7 @@ def gen(n, h):
     yuan_y1 = [np.mat([750000000])] * (n + 1)
     yuan_y2 = [np.mat([[750000000], [750000000]])] * (n + 1)
     # liciji
-    li_y = [np.mat([[0],[0],[ef0]])] * (n + 1)
+    li_y = [np.mat([[0], [0], [ef0]])] * (n + 1)
 
 # endregion
 
@@ -133,6 +134,9 @@ def gen(n, h):
         u[i] = math.sqrt(ud[i]**2 + uq[i]**2)
         betaw[i] = w[i] - wref
         betap = pt[i] - k * betaw[i]
-        yuan_y1[i+1],yuan_y2[i+1]=yuandong(betap,yuan_y1[i],yuan_y2[i],h)
-        pm[i+1]=0.33*yuan_y1[i+1]+0.67*yuan_y2[i+1]
+        yuan_y1[i + 1], yuan_y2[i + 1] = yuandong(betap, yuan_y1[i], yuan_y2[i], h)
+        pm[i + 1] = 0.33 * yuan_y1[i + 1] + 0.67 * yuan_y2[i + 1]
+        li_y[i+1]=lici(u0,u[i],li_y[i],h)
+        ef[i+1]=li_y[i+1][2]
+
 
