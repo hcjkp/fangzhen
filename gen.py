@@ -117,7 +117,7 @@ def gen(n, h):
     iq = [iq0 * iB] * (n + 1)
     id = [id0 * iB] * (n + 1)
     pm = [750000000] * (n + 1)
-    u = [math.sqrt(uq[0]**2 + ud[0]**2)]
+    u = [math.sqrt(uq[0]**2 + ud[0]**2)] * (n+1)
 
     # yuandognjicanshu
     yuan_y1 = [np.mat([750000000])] * (n + 1)
@@ -138,5 +138,10 @@ def gen(n, h):
         pm[i + 1] = 0.33 * yuan_y1[i + 1] + 0.67 * yuan_y2[i + 1]
         li_y[i+1]=lici(u0,u[i],li_y[i],h)
         ef[i+1]=li_y[i+1][2]
+
+
+    return ef
+print(gen(1000,0.001))
+
 
 
