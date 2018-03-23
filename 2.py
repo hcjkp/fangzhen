@@ -4,29 +4,23 @@ import math
 
 import time
 
-from load import Conditioner
+from scipy.optimize import fsolve
 
 
-def fangc(a, b, y, c, h):
-    out = y + (a * y + b * c) * h
-    out2 = y + (a * y + b * c + b * c + a * out) * h / 2
-    return out2
+def fx(x):
+    ud = x[0]
+    uq = x[1]
+    id = x[2]
+    iq = x[3]
+    eqq = 0.87
+    xdd = 0.3
+    xq = 1.7
+    ra = 0.0025
+    p = 0.27
+    s = 1
+    return [uq - eqq + xdd * id + ra * iq, ud - xq * iq + ra * id, ud * id + uq * iq - p,
+            np.sqrt(uq ** 2 + ud ** 2) * np.sqrt(id ** 2 + iq ** 2) - s/2]
 
 
-def lici(uref, n, h):  # ut为标幺值
-    a = np.mat([[-50, 0, 0],
-                [249.6, -250.2667, -1.25],
-                [6240, -6240, -31.25]])
-    b = np.mat([[50], [0], [0]])
-    t = [0] * 10001
-    ut = [0] * 10001
-    y = [np.mat([[1], [0], [0]])] * 10001
-    for i in range(10000):
-        ut[i + 1] = ut[i] + h * (y[i][2] / 5.36 - ut[i] / 5.36 / 0.8)
-        c = uref - ut[i]
-        y[i+1]=fangc(a,b,y[i],c,h)
-    return y
-star = time.time()
-print(lici(1,1000,0.001))
-stop=time.time()
-print(star-stop)
+result = fsolve(fx, [0.255707185749,0.659252482101,0.690724533639,0.151326199416])
+print(result)
