@@ -56,6 +56,7 @@ xqq=0.55
 ra=0.0025
 td0=0.03
 sita0=21.2/180*pi
+print(sin(sita0))
 uB=math.sqrt(2)*uref/math.sqrt(3)
 iB=sref/3/(uref/math.sqrt(3))*math.sqrt(2)
 
