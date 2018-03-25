@@ -49,7 +49,7 @@ sref = 900000000
 pref = 750000000
 s = pref - 1j * math.sqrt(sref ** 2 - pref ** 2)
 
-prefb = 1
+
 xd = 1.8
 xq = 1.7
 x1 = 0.2
@@ -57,7 +57,7 @@ xdd = 0.3
 xqq = 0.55
 ra = 0.0025
 td0 = 0.03
-sita0 = 21.2 / 180 * pi
+sita0 = 36.1 / 180 * pi
 uB = math.sqrt(2) * uref / math.sqrt(3)
 iB = sref / 3 / (uref / math.sqrt(3)) * math.sqrt(2)
 
@@ -83,35 +83,31 @@ def lici(uref, ut, y, h):  #
     return y
 
 
-def uqud(ef,p,s):
+def uqud(eqq, p, s):
     def fx(x):
         ud = x[0]
         uq = x[1]
         id = x[2]
         iq = x[3]
-        xdd = 0.3
-        xq = 1.7
-        ra = 0.0025
-        return [uq - ef - xdd * id - ra * iq, ud - xq * iq - ra * id, ud * id + uq * iq - p,
+        return [uq - eqq + xdd * id + ra * iq, ud - xq * iq + ra * id, ud * id + uq * iq - p,
                 np.sqrt(uq ** 2 + ud ** 2) * np.sqrt(id ** 2 + iq ** 2) - s]
 
-    result = fsolve(fx, [1,1,1,1])
+    result = fsolve(fx, [1, 1, 1, 1])
     return result
-print(uqud(1.9,0.8,1))
 
 
-def gen(n, h):
+def gen(n, h, pload, sload):
     # region 初始值设定
     sita = [sita0] * (n + 1)
     t = [h] * (n + 1)
     i0 = s / (3 * uref / math.sqrt(3))
-    i00 = abs(i0)
+    i00 = abs(i0) * math.sqrt(2)
     fu = 0
-    fi = fu - math.asin(pref / sref)
+    fi = fu - math.acos(pref / sref)
     ia = [i00 / iB * cos(fi)] * (n + 1)
     ib = [i00 / iB * cos(fi - pi / 3 * 2)] * (n + 1)
     ic = [i00 / iB * cos(fi + pi / 3 * 2)] * (n + 1)
-    u0 = uref / math.sqrt(3)
+    u0 = uref / math.sqrt(3) * math.sqrt(2)
 
     ua = [u0 / uB * cos(0)] * (n + 1)
     ub = [u0 / uB * cos(-pi / 3 * 2)] * (n + 1)
@@ -131,6 +127,8 @@ def gen(n, h):
     betaw = [0] * (n + 1)
     pt = [0] * (n + 1)
     pe = [0] * (n + 1)
+    pt1 = [0] * (n + 1)
+    pe1 = [0] * (n + 1)
     ef0 = eq0
     ef = [ef0] * (n + 1)
     # ud1=xq*iq1-ra*id1
@@ -149,12 +147,15 @@ def gen(n, h):
     yuan_y2 = [np.mat([[750000000], [750000000]])] * (n + 1)
     # liciji
     li_y = [np.mat([[0], [0], [ef0]])] * (n + 1)
+    print(ud1, uq1, iq1, id1)
 
     # endregion
 
     for i in range(n):
-        pt[i] = ud[0] * id[0] + uq[0] * iq[0]
-        pe[i] = ud[0] * id[0] + uq[0] * iq[0] + ra * (id[i] ** 2 + iq[i] ** 2)
+        pt1[i] = ud1[i] * id1[i] + uq1[i] * iq1[i]
+        pe1[i] = ud1[i] * id1[i] + uq1[i] * iq1[i] + ra * (id1[i] ** 2 + iq1[i] ** 2)
+        pt[i] = (ud1[i] * id1[i] + uq1[i] * iq1[i]) * sref
+        pe[i] = (ud1[i] * id1[i] + uq1[i] * iq1[i] + ra * (id1[i] ** 2 + iq1[i] ** 2)) * sref
         t[i] = i * h
         u[i] = math.sqrt(ud[i] ** 2 + uq[i] ** 2)
         betaw[i] = w[i] - wref
@@ -164,6 +165,17 @@ def gen(n, h):
         li_y[i + 1] = lici(u0, u[i], li_y[i], h)
         ef[i + 1] = li_y[i + 1][2]
 
+        result = uqud(eqq[i + 1], pload[i + 1] / sref, sload[i + 1] / sref)
+        ud1[i + 1] = result[0]
+        uq1[i + 1] = result[1]
+        id1[i + 1] = result[2]
+        iq1[i + 1] = result[3]
+        ud[i + 1] = ud1[i + 1] * uB
+        uq[i + 1] = uq1[i + 1] * uB
+        id[i + 1] = id1[i + 1] * uB
+        iq[i + 1] = iq1[i + 1] * uB
+
     return ef
 
 
+gen(10, 1)
