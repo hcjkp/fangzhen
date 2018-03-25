@@ -41,14 +41,13 @@ def xiang(x, y):
 
 # region 发电机初始参数
 k = 20
-wref = 50
+wref = 314.15
 wrefb = 1
 uref = 20000
 urefb = 1
 sref = 900000000
 pref = 750000000
 s = pref - 1j * math.sqrt(sref ** 2 - pref ** 2)
-
 
 xd = 1.8
 xq = 1.7
@@ -120,7 +119,9 @@ def gen(n, h, pload, sload):
     ud1 = [ud0] * (n + 1)
     w = [314.15] * (n + 1)
 
-    eqq0 = uq0 + xdd * id0 + ra * iq0
+    eqq10 = uq0 + xdd * id0 + ra * iq0
+    eqq0 = eqq10 * uB
+    eqq1 = [eqq10] * (n + 1)
     eqq = [eqq0] * (n + 1)
     eq0 = eqq0 + (xd - xdd) * id0
     eq = [eqq0] * (n + 1)
@@ -130,6 +131,7 @@ def gen(n, h, pload, sload):
     pt1 = [0] * (n + 1)
     pe1 = [0] * (n + 1)
     ef0 = eq0
+    print(uq0, ud0)
     ef = [ef0] * (n + 1)
     # ud1=xq*iq1-ra*id1
     # uq1=eqq-xdd*id1-ra*iq1
@@ -147,7 +149,9 @@ def gen(n, h, pload, sload):
     yuan_y2 = [np.mat([[750000000], [750000000]])] * (n + 1)
     # liciji
     li_y = [np.mat([[0], [0], [ef0]])] * (n + 1)
-    print(ud1, uq1, iq1, id1)
+    li_y1 = [np.mat([[0], [0], [ef0 / uB]])] * (n + 1)
+
+    dian_y = [np.mat([[eqq10], [wref], [sita0]])] * (n + 1)
 
     # endregion
 
@@ -159,13 +163,27 @@ def gen(n, h, pload, sload):
         t[i] = i * h
         u[i] = math.sqrt(ud[i] ** 2 + uq[i] ** 2)
         betaw[i] = w[i] - wref
-        betap = pt[i] - k * betaw[i]
+        betap = pe[i] - k * betaw[i]
         yuan_y1[i + 1], yuan_y2[i + 1] = yuandong(betap, yuan_y1[i], yuan_y2[i], h)
-        pm[i + 1] = 0.33 * yuan_y1[i + 1] + 0.67 * yuan_y2[i + 1]
+        pm[i + 1] = float(0.33 * yuan_y2[i + 1][0] + 0.67 * yuan_y2[i + 1][1])
         li_y[i + 1] = lici(u0, u[i], li_y[i], h)
-        ef[i + 1] = li_y[i + 1][2]
+        print(u[i])
+        print(li_y[i])
+        li_y1[i + 1] = li_y[i + 1] / uB
+        ef[i + 1] = float(li_y1[i + 1][2])
+        print(ef[i])
 
-        result = uqud(eqq[i + 1], pload[i + 1] / sref, sload[i + 1] / sref)
+        a = np.mat([[-1 / 8, 0, 0], [0, 0, 0], [0, 1, 0]])
+        b = np.mat([[ef[i] - (xd - xdd) * id1[i]], [(pm[i] - pe[i]) / 13 / w[i]], [-wref]])
+        c = 1
+        dian_y[i+1]=fang(a,b,dian_y[i],c,h)
+
+        eqq1[i + 1] = float(dian_y[i + 1][0])
+        w[i+1]=float(dian_y[i+1][1])
+
+        print(pm[i],pe[i])
+
+        result = uqud(eqq1[i + 1], pload[i + 1] / sref, sload[i + 1] / sref)
         ud1[i + 1] = result[0]
         uq1[i + 1] = result[1]
         id1[i + 1] = result[2]
@@ -174,8 +192,7 @@ def gen(n, h, pload, sload):
         uq[i + 1] = uq1[i + 1] * uB
         id[i + 1] = id1[i + 1] * uB
         iq[i + 1] = iq1[i + 1] * uB
-
     return ef
 
 
-gen(10, 1)
+gen(10, 0.001, [750000000] * 11, [900000000] * 11)
