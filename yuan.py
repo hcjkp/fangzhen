@@ -16,14 +16,15 @@ def lici(uref, h):  # ut为标幺值
                 [6240, -6240, -31.25]])
     b = np.mat([[50], [0], [0]])
     t = [0] * 10001
-    ut = [0] * 10001
-    y = [np.mat([[1], [0], [0]])] * 10001
+    ut = [1] * 10001
+    y = [np.mat([[0], [0], [1.2]])] * 10001
     for i in range(10000):
         ut[i + 1] = ut[i] + h * (y[i][2] / 5.36 - ut[i] / 5.36 / 0.8)
         c = uref - ut[i]
         y[i + 1] = y[i] + (a * y[i] + b * c) * h
         y[i + 1] = y[i] + (a * y[i] + b * c + b * c + a * y[i + 1]) * h / 2
     return y
+print(lici(1,0.001))
 
 
 
