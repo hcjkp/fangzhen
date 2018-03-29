@@ -192,7 +192,9 @@ def gen(n, h, pload, sload):
         uq[i + 1] = uq1[i + 1] * uB
         id[i + 1] = id1[i + 1] * uB
         iq[i + 1] = iq1[i + 1] * uB
+    print(ud1, uq1)
     return ef
+
 
 
 gen(10, 0.001, [750000000] * 11, [900000000] * 11)
