@@ -143,12 +143,9 @@ def out():
     for x in range(n1, n2 + 1):
         for i in range(len(dir_list)):
             file_list = [t for t in os.listdir(a + '\\' + dir_list[i])]
-            if len(file_list) < 30:
-                dir_name = a + '\\' + dir_list[i]
-            else:
-                pass
-        os.mkdir(a + '\\' + str(len(dir_list)))
-        dir_name = a + '\\' + str(len(dir_list))
+        os.mkdir(a + '\\' + str(x))
+        dir_name = a + '\\' + str(x)
         url_index_list, name_index_list = get_index(url_inf, list_num, x)
         for i in range(len(url_index_list)):
             get_dir(url_index_list[i], name_index_list[i], dir_name)
+out()
